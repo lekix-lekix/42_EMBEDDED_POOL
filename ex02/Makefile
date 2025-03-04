@@ -6,7 +6,7 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/04 14:17:30 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/04 15:17:16 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS = ./main.c
 
 OBJS = $(SRCS:.c=.o)
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -O1
 
 NO_LINKING = -c $< -o $@
 
@@ -45,6 +45,7 @@ FLASH_MEM = -U flash:w:$(NAME).hex:i # actually doing the programming ; syntax :
 VERBOSE = -v # verbose output, for debugging
 
 all: hex
+	# flash
 
 hex: $(NAME).elf $(NAME).bin
 
@@ -61,7 +62,6 @@ $(NAME).bin: $(NAME).elf	# converting .elf to .bin to .hex
 
 flash: hex
 	avrdude $(PARTNO) $(PROGRAMMER) $(PORT) $(FLASH_MEM) $(VERBOSE)
-	make clean
 	
 clean: 
 	rm -f *.o 

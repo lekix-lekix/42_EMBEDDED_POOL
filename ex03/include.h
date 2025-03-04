@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 11:52:06 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/04 14:06:04 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/04 15:16:15 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 #define INCLUDE_H
 
 #include <avr/io.h>
+#include <util/delay.h>
 
 #endif
