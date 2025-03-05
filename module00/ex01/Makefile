@@ -6,7 +6,7 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/04 14:17:30 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/05 13:55:43 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,25 +46,23 @@ VERBOSE = -v # verbose output, for debugging
 
 all: hex
 
-hex: $(NAME).elf $(NAME).bin
+hex: $(NAME).hex
+
+$(NAME).hex: $(NAME).elf
+	avr-objcopy -O ihex $< $@
 
 $(NAME).elf: $(OBJS)
 	$(CC) $(ARCH) $(OBJS) -o $@
-
-$(NAME).bin: $(NAME).elf	# converting .elf to .bin to .hex
-	avr-objcopy -O binary $(NAME).elf $(NAME).bin
-	avr-objcopy -O ihex $(NAME).elf $(NAME).hex
-	rm $(NAME).o $(NAME).elf $(NAME).bin 
 
 %.o:%.c
 	$(CC) $(CFLAGS) $(ARCH) $(CPU_FREQ) $(BAUD) $(NO_LINKING)
 
 flash: hex
 	avrdude $(PARTNO) $(PROGRAMMER) $(PORT) $(FLASH_MEM) $(VERBOSE)
-	make clean
 	
 clean: 
 	rm -f *.o 
+	rm -f *.elf
 	rm -f ./$(NAME).hex
 	rm -f ./$(NAME).bin
 
