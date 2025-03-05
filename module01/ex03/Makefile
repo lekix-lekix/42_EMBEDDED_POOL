@@ -6,7 +6,7 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/05 13:55:43 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/05 20:12:49 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS = ./main.c
 
 OBJS = $(SRCS:.c=.o)
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -O1
 
 NO_LINKING = -c $< -o $@
 
