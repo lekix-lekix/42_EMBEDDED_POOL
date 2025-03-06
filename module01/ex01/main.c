@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:30:43 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/05 19:16:58 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/06 11:24:21 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ int main ()
 {
     DDRB = 2; // setting D2 as output
     OCR1A = 31249; // setting TOP value (see calculation at bottom)
-    TCCR1A = (1 << COM1A0); // Toggle OC1A/OC1B on Compare Match. (OC1A being the D2 led on the board)
-    TCCR1B = (1 << WGM12); // Activating CTC mode to trigger an event when TOP value is reached
-    TCCR1B |= (1 << CS12); // Selecting 256 prescaler
+    TCCR1A = (1 << COM1A0); // Toggle OC1A/OC1B on compare match mode and clear. (OC1A being the D2 led on the board)
+    TCCR1B = (1 << WGM12); // Activating CTC mode to trigger an event and reset phase when TOP value is reached
+    TCCR1B |= (1 << CS12); // Selecting 256 prescaler (prescaler CS10 => CS12)
     while (1) {}
 }
 
