@@ -6,13 +6,12 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:01:03 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/06 16:33:41 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/06 16:34:33 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
 
 void uartinit(void)
 {
