@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:34:19 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/07 10:53:06 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/07 12:56:13 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void uart_printstr(const char *str)
     while (str[++i])
     {
         while (!(UCSR0A & (1 << UDRE0))) {}
-        UDR0 = str[i];
+        UDR0 = str[i]; // sending char by char
     }
 }
 
@@ -38,7 +38,7 @@ void uartinit(void)
     UCSR0B = (1 << TXEN0); // setting the "Transmit Enabled" bit in the UCSR0B register
 }
 
-void uart_tx(unsigned char c)
+void uart_tx(char c)
 {
     while (!(UCSR0A & (1 << UDRE0))) {} // checking that no transmission is ongoing, by checking the "Data Register Empty" flag
     UDR0 = c; // loading the data buffer with our char
@@ -46,11 +46,9 @@ void uart_tx(unsigned char c)
 
 void init_timer()
 {
-    OCR1A = 3124; // setting PWM resolution, aka when to trigger an event
-    ICR1 = 62499; // setting TOP value, aka full phase of the PWM
+    OCR1A = 31250; // CPU freq / prescaler -> 16mhz / 2 = 31250
     TIMSK1 = (1 << OCIE1A); // enabling an interrupt on when an Output Compare A Match happens
-    TCCR1A = (1 << WGM11);
-    TCCR1B = (1 << WGM13 | 1 << WGM12 | 1 << CS12); // toggling fast PWM mode 14 with 256 prescaler
+    TCCR1B = (1 << WGM12 | 1 << CS12 | 1 << CS10); // toggling CTC mode with 1024 prescaler
 }
 
 int main ()
