@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:30:43 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/07 11:15:26 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/09 10:56:45 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int main ()
 // Default timer overflow : 65536 / 16 000 000 (cpu freq) = 4.1 ms.
 // Prescaler formula :
 // (overflow value * prescaler) / cpu freq = freq desired
-// so : prescaler = cpu freq * freq desired / overflow value;
-// in this case : prescaler = 16 000 000 / 65636 ~= 244;
+// so : prescaler = cpu freq * freq desired (in hz) / overflow value;
+// in this case : prescaler = 16 000 000 * 1 / 65636 ~= 244;
 // TOP value = cpu freq / prescaler
 // here = 16 000 000 / 256 - 1 = 62.499 (/2 to get 0.5 hz) 
