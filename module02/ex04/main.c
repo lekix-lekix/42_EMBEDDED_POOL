@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 13:14:35 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/09 11:41:34 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/09 15:51:37 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void prompt(char *str, int pwd)
 void run_wild(void)
 {
     uart_printstr("\x1b[2J\x1b[H");
-    DDRB = (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB5);
+    DDRB = (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB4);
     DDRD = (1 << PD3 | 1 << PD5 | 1 << PD6);
     int rgb;
     long int i = 0;

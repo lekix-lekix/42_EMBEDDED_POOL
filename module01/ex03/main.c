@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 20:07:02 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/06 12:00:55 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/09 16:24:49 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	main(void)
 	ICR1 = 62499; // setting TOP value
     int duty_cycle = 10;
 	OCR1A = calc_duty_cycle(duty_cycle);  // setting PWM resolution
-	TCCR1A = (1 << COM1A1 | 1 << WGM11); // Toggle OC1A/OC1B on Compare Match. (OC1A being the D2 led on the board)
+	TCCR1A = (1 << COM1A1 | 1 << WGM11); //     Toggle OC1A/OC1B on Compare Match. (OC1A being the D2 led on the board)
 	TCCR1B = (1 << WGM13 | 1 << WGM12 | 1 << CS12); // toggling fast PWM mode
     while (1)
     {
