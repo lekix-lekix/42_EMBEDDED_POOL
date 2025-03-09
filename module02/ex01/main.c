@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 16:34:19 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/07 18:16:32 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/09 11:08:58 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void uartinit(void)
     UBRR0L = 8; // initializing the baud rate low register value
     UBRR0H = 0x00; // as the value is < 255, no need to set anything in the high register
     UCSR0B = (1 << TXEN0); // setting the "Transmit Enabled" bit in the UCSR0B register
+    UCSR0C = (1 << UCSZ00 | 1 << UCSZ01 | 0 << USBS0); // UCSZ00 + UCSZ01 = 8bits CharSize, USBS0 << 0 = one stop bit
 }
 
 void uart_tx(char c)
@@ -46,7 +47,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 
 void init_timer()
 {
-    OCR1A = 31250; // CPU freq / prescaler -> 16mhz / 2 = 31250
+    OCR1A = 31250; // (CPU freq / prescaler) * freq desired -> (16mhz / 1024) * 2 = 31250
     TIMSK1 = (1 << OCIE1A); // enabling an interrupt on when an Output Compare A Match happens
     TCCR1B = (1 << WGM12 | 1 << CS12 | 1 << CS10); // toggling CTC mode with 1024 prescaler
 }
@@ -58,3 +59,5 @@ int main ()
     uartinit();
     while (1) {}
 }
+
+// prescaler = 16 000 000 (cpu freq) * 2 (freq desired, hz) / 65636 (overflow value) ~= 487

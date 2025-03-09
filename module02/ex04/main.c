@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 13:14:35 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/07 19:14:26 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/09 11:41:34 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void uartinit(void)
     UBRR0L = 8; // initializing the baud rate low register value
     UBRR0H = 0x00; // as the value is < 255, no need to set anything in the high register
     UCSR0B = (1 << TXEN0 | 1 << RXEN0 | 1 << RXCIE0); // "Transmit Enabled" / "Receive Enabled" / "Receive Complete Interrupt Enable"
+    UCSR0C = (1 << UCSZ00 | 1 << UCSZ01 | 0 << USBS0); // UCSZ00 + UCSZ01 = 8bits CharSize, USBS0 << 0 = one stop bit
 }
 
 void uart_tx(char c)
@@ -56,6 +57,14 @@ void    add_char(char *str, char c)
     }
 }
 
+void    del_char(char *str)
+{
+    int i = 0;
+    while (str[i])
+        i++;
+    str[i - 1] = '\0';
+}
+
 int ft_strcmp(char *s1, char *s2)
 {
     int i = -1;
@@ -68,14 +77,6 @@ int ft_strcmp(char *s1, char *s2)
     if (s1[i] != s2[i])
         return (0);
     return (1);
-}
-
-void    del_char(char *str)
-{
-    int i = 0;
-    while (str[i])
-        i++;
-    str[i - 1] = '\0';
 }
 
 void    ft_bzero(char *str)
@@ -94,9 +95,9 @@ void prompt(char *str, int pwd)
 {
     char c = '\0';
     int i = 0;
-    while (c != 13) // carriage return
+    while (c != 13) // carriage return (enter)
     {
-        if (UCSR0A & (1 << RXC0))
+        if (UCSR0A & (1 << RXC0)) // receive complete flag
         {
             c = uart_rx();
             if (pwd && is_printable(c) && i < 63)
@@ -114,7 +115,7 @@ void prompt(char *str, int pwd)
             if (c == 127 && i > 0)
             {
                 del_char(str);
-                uart_printstr("\x08 \x08");
+                uart_printstr("\x08 \x08"); // move cursor left, print space, move cursor left
                 i--;
             }
         }
@@ -124,7 +125,8 @@ void prompt(char *str, int pwd)
 
 void run_wild(void)
 {
-    DDRB = (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB5); // initializing D2
+    uart_printstr("\x1b[2J\x1b[H");
+    DDRB = (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB5);
     DDRD = (1 << PD3 | 1 << PD5 | 1 << PD6);
     int rgb;
     long int i = 0;
@@ -150,10 +152,11 @@ void run_wild(void)
                 PORTD ^= (1 << PD6);
             }
         }
-        if (i == 80294) // 16 000 000 (cpu freq) / ~34s(t) / 2 (1 hz per whole led cycle)
+        if (i == 80294)
         {
-            PORTB ^= (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB4 | 1 << PB5); // flipping D2 bit
-            i = 0;        }
+            PORTB ^= (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB4 | 1 << PB5);
+            i = 0;        
+        }
         if (rgb == 2)
             rgb = 0;
         else
@@ -167,6 +170,7 @@ void user_pwd_prompt()
     char buff_pwd[64];
     char *user = "lekix";
     char *pwd = "password";
+    
     ft_bzero(buff_user);
     ft_bzero(buff_pwd);
     uart_printstr("username: ");
@@ -176,7 +180,7 @@ void user_pwd_prompt()
     if (ft_strcmp(buff_user, user) && ft_strcmp(buff_pwd, pwd))
         run_wild();
     else
-        uart_printstr("Wrong password !\r\n\t");
+        uart_printstr("Wrong username / password combination!\r\n\t");
 }
 
 int main ()
@@ -188,10 +192,8 @@ int main ()
     while (1) 
     {
         _delay_ms(500);
-        uart_printstr("Please enter your login:\r\n");
+        uart_printstr("Please enter your login:\r\n\t");
         uart_tx(2);
-        uart_tx(9);
         user_pwd_prompt();
-
     }
 }
