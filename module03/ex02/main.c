@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 15:52:46 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/09 19:28:28 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/10 12:36:07 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void init_rgb()
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b)
 {
-    OCR0A = r;
-    OCR0B = g;
+    OCR0B = r;
+    OCR0A = g;
     OCR2B = b;
 }
 
