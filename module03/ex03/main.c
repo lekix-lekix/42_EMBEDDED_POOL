@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 19:24:07 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/10 14:31:53 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/11 12:41:10 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,21 @@ void	uart_printstr(const char *str)
 	}
 }
 
-void	init_rgb(void)
+void init_rgb()
 {
-	DDRD = (1 << PD6 | 1 << PD5 | 1 << PD3); // activating leds
-	TCCR0A = (1 << WGM00 | 1 << WGM01);      // activating timer0 to control brightness
-	TCCR0B = (1 << CS00 | 1 << CS01);
-	TCCR0A |= (1 << COM0A1 | 1 << COM0B1);
-	TCCR2A = (1 << COM2B1 | 1 << WGM20 | 1 << WGM21);
-	TCCR2B = (1 << CS20 | 1 << CS21);
-	TCCR1B = (1 << WGM13 | 1 << CS12 | 1 << CS10);
-	ICR1 = 65535;
+    DDRD = (1 << PD6 | 1 << PD5 | 1 << PD3);      // activating leds
+    TCCR0A = (1 << WGM00 | 1 << WGM01);           // timer0 set to fast PWM mode 3 
+    TCCR0B = (1 << CS00 | 1 << CS01);             // with a 64 prescaler
+
+    TCCR0A |= (1 << COM0A1 | 1 << COM0B1);        // OC0A (PD6 (green)) and OC0B (PD5 (red)) cleared on compare match
+    
+    TCCR2A = (1 << WGM20 | 1 << WGM21);           // timer2 set to fast PWM mode 3
+    TCCR2B = (1 << CS20 | 1 << CS21);             // with a 64 prescaler
+
+    TCCR2A |= (1 << COM2B1);                      // OC2B (PD3 (blue)) cleared on compare match
+    
+    TCCR1B = (1 << WGM13 | 1 << CS12 | 1 << CS10); // Timer1 set to PWM phase and freq correct mode 8 with a 1024 prescaler
+    ICR1 = 65535;                                  // = count from bottom to top
 }
 
 void	set_rgb(uint8_t r, uint8_t g, uint8_t b)

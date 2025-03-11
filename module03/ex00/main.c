@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 11:54:34 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/09 15:17:27 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/11 10:47:27 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-ISR(TIMER1_COMPA_vect, ISR_NOBLOCK)
+ISR(TIMER1_COMPA_vect)
 {
     static int rgb = 1;
 
@@ -31,9 +31,9 @@ ISR(TIMER1_COMPA_vect, ISR_NOBLOCK)
 
 void init_timer()
 {
-    OCR1A = 15625; // (CPU freq / prescaler) * freq desired -> (16mhz / 1024) * 2 = 31250
+    OCR1A = 62499; // (CPU freq / prescaler) * freq desired -> (16mhz / 256) * 1 - 1 = 62499
     TIMSK1 = (1 << OCIE1A); // enabling an interrupt on when an Output Compare A Match happens
-    TCCR1B = (1 << WGM12 | 1 << CS12 | 1 << CS10); // toggling CTC mode with 1024 prescaler
+    TCCR1B = (1 << WGM12 | 1 << CS12); // toggling CTC mode with 256 prescaler
 }
 
 int main ()
@@ -44,3 +44,5 @@ int main ()
     init_timer();
     while (1) {}
 }
+
+// prescaler : (cpu freq / overflow value) * freq desired (hz) - 1 -> 16000000 / 65636 * 1 ~= 244
