@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 15:52:46 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/11 12:48:15 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/11 18:54:43 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void init_rgb()
     TCCR2A |= (1 << COM2B1);                      // OC2B (PD3 (blue)) cleared on compare match
     
     TCCR1B = (1 << WGM13 | 1 << CS12 | 1 << CS10); // Timer1 set to PWM phase and freq correct mode 8 with a 1024 prescaler
-    ICR1 = 65535;                                   // = count from bottom to top
+    ICR1 = 65535;                                  // = count from bottom to top
 }
 
 void set_rgb(uint8_t r, uint8_t g, uint8_t b)
