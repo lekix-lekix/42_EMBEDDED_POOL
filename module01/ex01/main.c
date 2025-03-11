@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 16:30:43 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/09 10:56:45 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/11 10:38:00 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int main ()
     while (1) {}
 }
 
-// We want 1 overflow per s (1 hz : a led cycle should last 1s). Timer at 16bit, so overflow value is 65353
+// We want 1 overflow per s (1 hz : a led cycle should last 1s). Timer at 16bit, so overflow value is 65536
 // Default timer overflow : 65536 / 16 000 000 (cpu freq) = 4.1 ms.
 // Prescaler formula :
 // (overflow value * prescaler) / cpu freq = freq desired
