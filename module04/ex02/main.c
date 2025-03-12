@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 19:48:05 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/11 20:23:04 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/12 15:34:48 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int check_PIND(int button)
     if ((PIND & (1 << button)) == 0) // checking if button is pressed
     {
         _delay_ms(50);
-        if ((PIND & (1 << button)) == 0) // confirmation, boucing effect
+        if ((PIND & (1 << button)) == 0) // confirmation, bouce effect
             return (1);
         return (0);
     }
@@ -56,11 +56,12 @@ ISR(PCINT2_vect)
 int	main(void)
 {
 	DDRB = (1 << PB0 | 1 << PB1 | 1 << PB2 | 1 << PB4); // initializing the leds as output
-    PORTD = (1 << PD2 | 1 << PD4);
-    EICRA = (1 << ISC01);
-	EIMSK = (1 << INT0);
-    PCICR = (1 << PCIE2);
-    PCMSK2 = (1 << PCINT20);
+    PORTD = (1 << PD2 | 1 << PD4);  // initializing switches
+    EICRA = (1 << ISC01);   // detecting falling edge of switch (aka button press, not released)
+	EIMSK = (1 << INT0);    // activating external pin interrupt on switch 1
+    PCICR = (1 << PCIE2);   // activating pin change interrupt on whole PORTD
+    PCMSK2 = (1 << PCINT20); // targeting PCINT20 (switch2) changes to launch an interrupt
     sei();
 	while (1){}
 }
+

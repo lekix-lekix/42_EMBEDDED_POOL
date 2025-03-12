@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 15:06:54 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/11 14:35:27 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/12 14:21:01 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ ISR(INT0_vect)
 {
 	if (!flag)
 	{
-		EIMSK = 0;
+		EIMSK = 0;					// deactivating interrupt
 		flag = 1;
     }
 }
@@ -28,8 +28,8 @@ ISR(INT0_vect)
 int	main(void)
 {
 	DDRB = (1 << PB0);
-	EICRA = (1 << ISC01);
-	EIMSK = (1 << INT0);
+	EIMSK = (1 << INT0);			// switch 1 interrupt activated
+	EICRA = (1 << ISC01);			// on falling edge (== button pressed)
 	sei();
 	while (1)
 	{
@@ -38,7 +38,7 @@ int	main(void)
 			_delay_ms(100);
 			PORTB ^= (1 << PB0);
 			_delay_ms(100);
-	        EIMSK = (1 << INT0);
+	        EIMSK = (1 << INT0);	// reactivating interrupt
 			flag = 0;
 		}
 	}
