@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 16:48:51 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/12 19:43:15 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 14:13:02 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_putchar_hex(char c)
     }
 }
 
-void	ft_putnbr(int nb)
+void	ft_putnbr_hex(int nb)
 {
 	long int	number;
 
@@ -58,27 +58,41 @@ void	ft_putnbr(int nb)
 		ft_putchar_hex(number);
 	if (number > 16)
 	{
-		ft_putnbr(number / 16);
+		ft_putnbr_hex(number / 16);
 		ft_putchar_hex(number % 16);
 	}
 }
 
-int main ()
+int get_conversion(void)
 {
-    // PORTC = (1 << PC0); // activating le potentiometre
+    ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
+    while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your conversion bro"
+    return (ADCH); // reading into high register since its an 8 bit conversion
+}
+
+void init_ADC(void)
+{
     ADMUX = (1 << REFS0); // setting reference voltage, here AVCC
     ADMUX |= (1 << ADLAR); // 8 bits conversion
     ADMUX &= 0xF0; // setting the last four MUX bits to 0, aka using ADC0 (useless in this case)
     ADCSRA = (1 << ADPS2 | 1 << ADPS1 | 1 << ADPS0); // prescaler 128 (see calculations)
     ADCSRA |= (1 << ADEN); // starting the ADC
+}
+
+int main ()
+{
+    init_ADC();
     uartinit();
     while (1)
     {
         _delay_ms(20);
-        ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
-        while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your conversion bro"
-        ft_putnbr(ADCH);
+        ft_putnbr_hex(get_conversion());
         uart_tx('\n');
         uart_tx('\r');
     }
 }
+
+// the ADC requires an input clock freq between 50khz and 200khz (datasheet p. 249)
+// cpu clock being 16mhz, we need to lower it down
+// f_adc = cpu clock / prescaler
+// 16mhz / 256 = 125khz which is perfect

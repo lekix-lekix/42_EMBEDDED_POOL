@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 20:07:29 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/12 20:47:24 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 14:41:39 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,32 +64,46 @@ void	ft_putnbr(int nb)
 	}
 }
 
-int main ()
+void init_ADC(void)
 {
     ADMUX = (1 << REFS0); // setting reference voltage, here AVCC
-    // ADMUX |= (1 << ADLAR); // 8 bits conversion
+    // ADMUX |= (1 << ADLAR); // ADLAR clear = 10 bits conversion
+    ADMUX &= 0xF0; // setting the last four MUX bits to 0, aka using ADC0 (useless in this case)
     ADCSRA = (1 << ADPS2 | 1 << ADPS1 | 1 << ADPS0); // prescaler 128 (see calculations)
     ADCSRA |= (1 << ADEN); // starting the ADC
+}
+
+void set_conversion_type(int conversion)
+{
+    ADMUX &= 0xF8; // reset which ADC is being read from
+    if (conversion != 0)
+        ADMUX |= conversion;
+}
+
+int get_conversion(void)
+{
+    ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
+    while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your conversion bro"
+    return (ADCL | (ADCH << 8)); // reading low register FIRST (!) and then the high register
+}
+
+int main ()
+{
+    init_ADC();
     uartinit();
+    
+    int i = 0;
     while (1)
     {
-        _delay_ms(20);
-        ADMUX &= 0xF8;              // last 3 bits to zero = reading from ADC0 (le potentiometre)
-        ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
-        while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your conversion bro"
-        ft_putnbr(ADCL | ADCH << 8); // reading low register FIRST (!) and then adding the high register on top of it
-        uart_printsr(", ");
-        ADMUX &= 0xF8;              // reset last bits
-        ADMUX |= 1;                 // last bit to 1 = reading from ADC1
-        ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
-        while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your conversion bro"
-        ft_putnbr(ADCL | ADCH << 8);
-        uart_printsr(", ");
-        ADMUX &= 0xF8;              // reset last bits
-        ADMUX |= 2;                 // reading from ADC
-        ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
-        while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your conversion bro"
-        ft_putnbr(ADCL | ADCH << 8);
+        i = -1;
+        while (++i < 3)
+        {
+            _delay_ms(20);
+            set_conversion_type(i);
+            ft_putnbr(get_conversion());
+            if (i < 2)
+                uart_printsr(", ");
+        }
         uart_printsr("\r\n");
     }
 }

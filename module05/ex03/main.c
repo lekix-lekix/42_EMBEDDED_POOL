@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 20:47:34 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/12 20:57:37 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 14:47:47 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,8 @@ void	ft_putnbr(int nb)
 
 int main ()
 {
-    ADMUX = 0b00001000;
+    ADMUX = 0b00001000;     // activating the temperature sensor
     ADMUX |= (1 << REFS0 | 1 << REFS1); // setting reference voltage, here 1.1v
-    // ADMUX |= (1 << 4);
-    // ADMUX |= (1 << ADLAR); // 8 bits conversion
     ADCSRA = (1 << ADPS2 | 1 << ADPS1 | 1 << ADPS0); // prescaler 128 (see calculations)
     ADCSRA |= (1 << ADEN); // starting the ADC
     uartinit();
@@ -77,8 +75,8 @@ int main ()
     {
         _delay_ms(20);
         ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
-        while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's you
-        ft_putnbr(((ADCL | ADCH << 8) - 314) / 1.22);
+        while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your value mate"
+        ft_putnbr((ADCL | ADCH << 8) * 0.9425 - 272.39); // merci chatgpt pour ces valeurs (values at p.257 of datasheet)
         uart_printsr("\r\n");
     }
 }
