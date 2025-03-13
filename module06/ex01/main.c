@@ -6,13 +6,15 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/13 20:29:18 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 20:44:44 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <avr/io.h>
 #include <util/twi.h>
 #include <util/delay.h>
+
+# define SENSOR_ADDR 0x38
 
 void uart_init(void)
 {
@@ -42,7 +44,7 @@ void i2c_init(void)
 
 void i2c_start(void)
 {                                      // TWINT = TWI interrupt flag, when set starts the the operation of the TWI
-    TWCR |= (1 << TWSTA | 1 << TWINT); // TWSTA = checks if bus is available and generate a START condition if so
+    TWCR = (1 << TWSTA | 1 << TWINT | 1 << TWEN); // TWSTA = checks if bus is available and generate a START condition if so
     while (!(TWCR & (1 << TWINT))) {}  // TWSR = TWI status register
     if ((TWSR & 0xF8) == TW_START)    // Checking if start went through
         uart_printstr("Start ok!\r\n");
@@ -50,16 +52,31 @@ void i2c_start(void)
 
 void i2c_stop(void)
 {
-    TWCR |= (1 << TWSTO) | (1 << TWINT);  
+    TWCR = (1 << TWSTO | 1 << TWINT | 1 << TWEN);  
     while (!(TWCR & (1 << TWINT))) {}   // checking if the stop went through
     uart_printstr("Stop ok!\n");
 }
 
 void i2c_write(unsigned char c)
 {
-    TWDR = c;
+    TWDR = SENSOR_ADDR;
+    TWCR = (1 << TWINT | 1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}   // checking if the stop went through
     uart_printstr("Send ok!\n");
+}
+
+void i2c_read(void)
+{
+    uint8_t data;
+
+    TWCR = (1 << TWEA | 1 << TWINT | 1 << TWEN); 
+    while (!(TWCR & (1 << TWINT)));
+    if ((TWSR & 0xF8) == TW_MR_DATA_ACK)           // 0x50 : Donnée reçue + ACK envoyée
+    {
+        data = TWDR;
+        uart_tx('r');
+        uart_tx(data);
+    }
 }
 
 int main ()
@@ -67,9 +84,8 @@ int main ()
     uart_init();
     i2c_init();
     i2c_start();
-    i2c_write(0x38 < 1 | 1);
-    // _delay_ms(100);
-    i2c_stop();
+    _delay_ms(100);
+    i2c_read();
     while (1) {}
 }
 
