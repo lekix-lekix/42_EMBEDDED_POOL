@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   mainbis.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lekix <lekix@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/14 00:15:26 by lekix            ###   ########.fr       */
+/*   Updated: 2025/03/14 00:08:49 by lekix            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,12 +165,6 @@ void start_sensor()
         uart_printstr("error\n");
         return ;  
     }
-    i2c_write(0xBE);
-    print_status(i2c_getstatus());
-    i2c_write(0xAC);
-    print_status(i2c_getstatus());
-    _delay_ms(40);
-
 }
 
 int main ()
@@ -178,8 +172,7 @@ int main ()
     uart_init();
     i2c_init();
     i2c_start();
-    start_sensor();
-    // i2c_write('a');
+    i2c_write('a');
     i2c_stop();
     while (1) {}
 }
