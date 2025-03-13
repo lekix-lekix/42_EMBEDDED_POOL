@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 16:48:51 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/13 13:28:32 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 18:39:29 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,6 @@ void	ft_putnbr_hex(int nb)
 	long int	number;
 
 	number = nb;
-	if (number < 0)
-	{
-		number = -number;
-		ft_putchar_hex('-');
-	}
 	if (number >= 0 && number <= 16)
 		ft_putchar_hex(number);
 	if (number > 16)
@@ -97,6 +92,7 @@ int main ()
     init_ADC();
     uartinit();
     
+    uint8_t nb;
     int i = 0;
     while (1)
     {
@@ -105,7 +101,10 @@ int main ()
         {
             _delay_ms(20);
             set_conversion_type(i);
-            ft_putnbr_hex(get_conversion());
+            nb = get_conversion();
+            if (nb == 0 || (nb > 0 && nb <= 9))
+                uart_tx('0');
+            ft_putnbr_hex(nb);
             if (i < 2)
                 uart_printsr(", ");
         }

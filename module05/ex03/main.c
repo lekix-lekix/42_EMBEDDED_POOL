@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 20:47:34 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/13 15:55:27 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 18:32:59 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char uart_rx(void)
     return (UDR0); // RX and TX share the same buffer register
 }
 
-void uart_printsr(char *str)
+void uart_printstr(char *str)
 {
     for (int i = 0; str[i]; i++)
         uart_tx(str[i]);
@@ -78,7 +78,13 @@ int main ()
         _delay_ms(20);
         ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
         while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your value mate"
-        ft_putnbr((ADCL | ADCH << 8) * TEMP_RATIO); // merci chatgpt pour ces valeurs (values at p.257 of datasheet)
-        uart_printsr("\r\n");
+        ft_putnbr((ADCL | ADCH << 8) * TEMP_RATIO); // temp ratio = expected temp / voltage
+        uart_printstr("\r\n");
     }
 }
+
+// Table 23-2. Sensor Output Code versus Temperature (Typical Values)
+// Temperature/°C –40°C +25°C +125°C
+//               0x010D 0x0160 0x01E0
+//                       352
+// 25 degree / 352 mv = 0.071022727
