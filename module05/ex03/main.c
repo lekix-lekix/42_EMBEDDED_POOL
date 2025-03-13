@@ -6,13 +6,15 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 20:47:34 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/13 14:47:47 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/13 15:55:27 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+
+#define TEMP_RATIO 0.071022727
 
 void uartinit(void)
 {
@@ -76,7 +78,7 @@ int main ()
         _delay_ms(20);
         ADCSRA |= (1 << ADSC);      // saying "i want a conversion"
         while (ADCSRA & (1 << ADSC)) {}  // once it's off : "here's your value mate"
-        ft_putnbr((ADCL | ADCH << 8) * 0.9425 - 272.39); // merci chatgpt pour ces valeurs (values at p.257 of datasheet)
+        ft_putnbr((ADCL | ADCH << 8) * TEMP_RATIO); // merci chatgpt pour ces valeurs (values at p.257 of datasheet)
         uart_printsr("\r\n");
     }
 }
