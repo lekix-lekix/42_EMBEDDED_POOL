@@ -6,13 +6,14 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/13 20:30:05 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/14 14:31:36 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = main
 
-SRCS = ./main.c
+SRCS = ./main.c \
+		./print_status.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -44,7 +45,8 @@ FLASH_MEM = -U flash:w:$(NAME).hex:i # actually doing the programming ; syntax :
 
 VERBOSE = -v # verbose output, for debugging
 
-all: hex
+all: flash
+	screen /dev/ttyUSB0 115200
 
 hex: $(NAME).hex
 

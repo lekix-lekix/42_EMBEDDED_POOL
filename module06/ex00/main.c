@@ -6,13 +6,11 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/13 20:29:18 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/14 15:06:22 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <avr/io.h>
-#include <util/twi.h>
-#include <util/delay.h>
+#include "include.h"
 
 void uart_init(void)
 {
@@ -36,30 +34,21 @@ void uart_printstr(char *str)
 
 void i2c_init(void)
 {
-    TWBR = 72; // Prescaler already set to 1
+    TWBR = 72;          // Prescaler already set to 1
     TWCR = (1 << TWEN); // starting the TWI module (i2c)
 }
 
-void i2c_start(void)
-{                                      // TWINT = TWI interrupt flag, when set starts the the operation of the TWI
-    TWCR |= (1 << TWSTA | 1 << TWINT); // TWSTA = checks if bus is available and generate a START condition if so
-    while (!(TWCR & (1 << TWINT))) {}  // TWSR = TWI status register
-    if ((TWSR & 0xF8) == TW_START)    // Checking if start went through
-        uart_printstr("Start ok!\r\n");
+void i2c_start(void)                              // TWEN = Enable TWI module
+{                                                 // TWINT = TWI interrupt flag, when set starts the the operation of the TWI
+    TWCR = (1 << TWSTA | 1 << TWINT | 1 << TWEN); // TWSTA = checks if bus is available and generate a START condition if so
+    while (!(TWCR & (1 << TWINT))) {}             // TWSR = TWI status register
+    if ((TWSR & 0xF8) == 0x08)                // Checking if start went through
+        uart_printstr("START acknowledge.\r\n");
 }
 
 void i2c_stop(void)
 {
-    TWCR |= (1 << TWSTO) | (1 << TWINT);  
-    while (!(TWCR & (1 << TWINT))) {}   // checking if the stop went through
-    uart_printstr("Stop ok!\n");
-}
-
-void i2c_write(unsigned char c)
-{
-    TWDR = c;
-    while (!(TWCR & (1 << TWINT))) {}   // checking if the stop went through
-    uart_printstr("Send ok!\n");
+    TWCR = (1 << TWSTO) | (1 << TWINT) | (1 << TWEN);  // TWSTO = generate stop on the bus
 }
 
 int main ()
@@ -67,8 +56,6 @@ int main ()
     uart_init();
     i2c_init();
     i2c_start();
-    i2c_write(0x38 < 1 | 1);
-    // _delay_ms(100);
     i2c_stop();
     while (1) {}
 }

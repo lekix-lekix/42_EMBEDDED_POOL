@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/14 23:08:07 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/14 23:31:03 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ void uart_init(void)
 void i2c_init(void)
 {
     TWBR = 72;          // Prescaler already set to 1
-    TWSR = 0;
-    // TWCR = (1 << TWEN); // starting the TWI module (i2c)
+    TWCR = (1 << TWEN); // starting the TWI module (i2c)
 }
 
 void i2c_write(unsigned char data)
@@ -62,22 +61,21 @@ void i2c_start(void)
 void i2c_stop(void)
 {
     TWCR = (1 << TWSTO) | (1 << TWINT) | (1 << TWEN);  // TWSTO : TWI stop to send at the end of communication
-    while (!(TWCR & (1 << TWSTO))) {}
 }
 
 uint8_t i2c_getstatus(void)
 {
-    return (TWSR & 0xF8);                              // Ignoring last 3 bits (prescaler) to get status  
+    return (TWSR & 0xF8);
 }
 
 void aht_calibration(void)
 {
+    i2c_stop();
     i2c_start();
     i2c_write(SENSOR_ADDR << 1 | 0);
     i2c_write(0xBE);                                    // Calibration command (0xBE, 0x08, 0x00)
     i2c_write(0x08);
     i2c_write(0x00);
-    _delay_ms(10);
 }
 
 void	ft_putchar_hex(char c)
@@ -106,6 +104,91 @@ void	ft_putnbr_hex(uint8_t nb)
 	}
 }
 
+void	ft_putchar(char c)
+{
+	uart_tx(c);
+}
+
+void	ft_putnbr(uint32_t nb)
+{
+	long int	number;
+
+	number = nb;
+	if (number < 0)
+	{
+		number = -number;
+		ft_putchar('-');
+	}
+	if (number >= 0 && number <= 9)
+		ft_putchar(number + '0');
+	if (number > 9)
+	{
+		ft_putnbr(number / 10);
+		ft_putchar(number % 10 + '0');
+	}
+}
+
+void trigger_measurement(void)
+{
+    i2c_stop();
+    i2c_start();
+    i2c_write(SENSOR_ADDR << 1 | 0);    // Trigger measurement (0xAC, 0x33, 0x00) as Master Transmitter (write (= 0 ) in last bit)
+    i2c_write(0xAC);                    // Need to wait 80 ms according to AHT20 datasheet  
+    i2c_write(0x33);                        
+    i2c_write(0x00);
+    _delay_ms(80);
+}
+
+void print_bit(int32_t to_print)
+{
+    for (int i = 0; i < 32; i++)
+    {
+        if ((to_print & (1 << (31 - i))) != 0)
+            uart_tx('1');
+        else
+            uart_tx('0');
+    }
+    uart_printstr("\n\r");
+}
+
+void write_measures(float temp, float humid)
+{
+    float humidity = (humid * 100.0f) / 1048576.0f;
+    float temperature = (temp * 200.0f / 1048576.0f) - 50.0f;
+    int virg = (int)((temperature - (int)temperature) * 10); 
+
+    uart_printstr("Temperature: ");
+    ft_putnbr((int)temperature);
+    uart_tx('.');
+    ft_putnbr(virg);
+    uart_printstr("°C, Humidity: ");
+    ft_putnbr((int)humidity);
+    uart_printstr("% \r\n");
+}
+
+uint32_t get_temp(uint8_t *data)
+{
+    uint32_t temp = ((uint32_t)(data[2] & 0x0F)) << 16 | ((uint32_t)data[3] << 8) | data[4];
+    return (temp);
+}
+
+uint32_t get_humid(uint8_t *data)
+{
+    uint32_t humid = ((uint32_t)data[0] << 12 | (uint32_t)data[1] << 4 | ((uint32_t)data[2] & 0xF0));
+    return (humid);
+}
+
+void convert_measurements(uint8_t *data)
+{
+    uint32_t temp;
+    uint32_t humid;
+    
+    humid = ((uint32_t)data[0] << 12 | (uint32_t)data[1] << 4 | ((uint32_t)data[2] & 0xF0));
+    temp = ((uint32_t)(data[2] & 0x0F)) << 16 | ((uint32_t)data[3] << 8) | data[4];
+
+    write_measures(temp, humid);
+}
+
 void init_sensor()
 {
     _delay_ms(40);
@@ -119,14 +202,15 @@ void init_sensor()
     i2c_write(SENSOR_ADDR << 1 | 1);
     if (!(i2c_read() & 0x08))
     {
-        uart_printstr("calibration\r\n");
+        uart_printstr("calibration needed\r\n");
         aht_calibration();
     }
 }
 
-void get_measurement()
+void get_measurements(float *temp, float *humid)
 {
-    // uart_printstr("coucou\n");
+    uint8_t data[5];
+    
     i2c_start();
     i2c_write(SENSOR_ADDR << 1);
     i2c_write(0xAC);
@@ -137,26 +221,42 @@ void get_measurement()
 
     i2c_start();
     i2c_write(SENSOR_ADDR << 1 | 1);
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 6; i++)
     {
         i2c_read();
+        if (i == 0)
+        {
+            TWDR = 0;
+            continue;
+        }
         uint8_t res = TWDR;
-        if (res < 16)
-            uart_tx('0');
-        ft_putnbr_hex(res);
-        uart_printstr(" ");
+        data[i - 1] = res;
     }
-    uart_printstr("\r\n");
-    i2c_stop();
+    *temp += get_temp(data);
+    *humid += get_humid(data);
+}
+
+void    get_print_measures()
+{
+    float temp = 0;
+    float humid = 0;
+
+    for (int i = 0; i < 3; i++)
+        get_measurements(&temp, &humid);
+    write_measures(temp / 3.0f, humid / 3.0f);
 }
 
 int main ()
-{
+{    
     uart_init();
     i2c_init();
     init_sensor();
-    while (1) 
-        get_measurement();
+    
+    while (1)
+    {
+        get_print_measures();
+        _delay_ms(100);
+    }
 }
 
 // i2c baud = (freq_cpu / desired_freq(100khz) - 16) / (2 * prescaler)
