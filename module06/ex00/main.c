@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/14 15:06:22 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 10:47:10 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void i2c_start(void)                              // TWEN = Enable TWI module
 {                                                 // TWINT = TWI interrupt flag, when set starts the the operation of the TWI
     TWCR = (1 << TWSTA | 1 << TWINT | 1 << TWEN); // TWSTA = checks if bus is available and generate a START condition if so
     while (!(TWCR & (1 << TWINT))) {}             // TWSR = TWI status register
-    if ((TWSR & 0xF8) == 0x08)                // Checking if start went through
+    if ((TWSR & 0xF8) == 0x08)                    // Checking if start went through
         uart_printstr("START acknowledge.\r\n");
 }
 

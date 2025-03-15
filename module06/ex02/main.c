@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/14 23:31:03 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 11:14:55 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void print_bit(int32_t to_print)
 
 void write_measures(float temp, float humid)
 {
-    float humidity = (humid * 100.0f) / 1048576.0f;
+    float humidity = (humid * 100.0f) / 1048576.0f;                 // Formulas in the datasheet
     float temperature = (temp * 200.0f / 1048576.0f) - 50.0f;
     int virg = (int)((temperature - (int)temperature) * 10); 
 
@@ -169,7 +169,7 @@ void write_measures(float temp, float humid)
 uint32_t get_temp(uint8_t *data)
 {
     uint32_t temp = ((uint32_t)(data[2] & 0x0F)) << 16 | ((uint32_t)data[3] << 8) | data[4];
-    return (temp);
+    return (temp);                          // datasheet says 20 bits each per measure
 }
 
 uint32_t get_humid(uint8_t *data)
@@ -178,16 +178,16 @@ uint32_t get_humid(uint8_t *data)
     return (humid);
 }
 
-void convert_measurements(uint8_t *data)
-{
-    uint32_t temp;
-    uint32_t humid;
+// void convert_measurements(uint8_t *data)
+// {
+//     uint32_t temp;
+//     uint32_t humid;
     
-    humid = ((uint32_t)data[0] << 12 | (uint32_t)data[1] << 4 | ((uint32_t)data[2] & 0xF0));
-    temp = ((uint32_t)(data[2] & 0x0F)) << 16 | ((uint32_t)data[3] << 8) | data[4];
+//     humid = ((uint32_t)data[0] << 12 | (uint32_t)data[1] << 4 | ((uint32_t)data[2] & 0xF0));
+//     temp = ((uint32_t)(data[2] & 0x0F)) << 16 | ((uint32_t)data[3] << 8) | data[4];
 
-    write_measures(temp, humid);
-}
+//     write_measures(temp, humid);
+// }
 
 void init_sensor()
 {

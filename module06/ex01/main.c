@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/14 23:08:07 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 11:20:22 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,11 @@ void i2c_init(void)
 {
     TWBR = 72;          // Prescaler already set to 1
     TWSR = 0;
-    // TWCR = (1 << TWEN); // starting the TWI module (i2c)
 }
 
 void i2c_write(unsigned char data)
 {
-    TWDR = data;                                      // Writing into the TWI Data Register
+    TWDR = data;                                        // Writing into the TWI Data Register
     TWCR = (1 << TWINT | 1 << TWEN);
     while (!(TWCR & (1 << TWINT))) {}
 }
@@ -77,7 +76,7 @@ void aht_calibration(void)
     i2c_write(0xBE);                                    // Calibration command (0xBE, 0x08, 0x00)
     i2c_write(0x08);
     i2c_write(0x00);
-    _delay_ms(10);
+    _delay_ms(10);                                      // Waiting 10 ms as asked in the datasheet 
 }
 
 void	ft_putchar_hex(char c)
@@ -110,36 +109,35 @@ void init_sensor()
 {
     _delay_ms(40);
     
-    i2c_start();
-    i2c_write(SENSOR_ADDR << 1);
-    i2c_write(0x71);
+    i2c_start();                                                // Sensor initialization : 
+    i2c_write(SENSOR_ADDR << 1 | 0);                            // sending sensor adress << 1 | 0 : starting as Master Transmitter
+    i2c_write(0x71);                                            // Status request
     i2c_stop();
 
     i2c_start();
-    i2c_write(SENSOR_ADDR << 1 | 1);
-    if (!(i2c_read() & 0x08))
+    i2c_write(SENSOR_ADDR << 1 | 1);                            // Restarting as Master Receiver to read the sensor status
+    if (!(i2c_read() & 0x08))                                   // Reading status, if bit 3 is off : calibration needed
     {
-        uart_printstr("calibration\r\n");
+        uart_printstr("Calibration needed\r\n");
         aht_calibration();
-    }
+    }    
 }
 
 void get_measurement()
 {
-    // uart_printstr("coucou\n");
     i2c_start();
-    i2c_write(SENSOR_ADDR << 1);
-    i2c_write(0xAC);
+    i2c_write(SENSOR_ADDR << 1 | 0);                            // Starting comm. with sensor as Master Transmitter
+    i2c_write(0xAC);                                            // Request for measurement : 0xAC, 0x33, 0x00
     i2c_write(0x33);
     i2c_write(0x00);
     i2c_stop();
-    _delay_ms(80);
+    _delay_ms(80);                                              // Waiting for the measurement to be done
 
     i2c_start();
-    i2c_write(SENSOR_ADDR << 1 | 1);
+    i2c_write(SENSOR_ADDR << 1 | 1);                            // Restarting as Master Receiver
     for (int i = 0; i < 7; i++)
     {
-        i2c_read();
+        i2c_read();                                             // Reading the measures
         uint8_t res = TWDR;
         if (res < 16)
             uart_tx('0');
