@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:26:49 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 20:52:36 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 20:53:10 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int	check_prompt(char *str)
 	return (0);
 }
 
-void	prompt(char *str)
+void	cmd_prompt(char *str)
 {
 	char	c = '\0';
     int     i = 0;
