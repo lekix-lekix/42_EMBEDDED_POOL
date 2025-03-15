@@ -6,13 +6,12 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 23:51:46 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 01:05:53 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 15:55:05 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <avr/io.h>
 #include <avr/eeprom.h>
-#include <util/delay.h>
 
 void uart_tx(char c)
 {
@@ -36,7 +35,7 @@ void uart_init(void)
 
 void	ft_putchar_hex(char c)
 {
-    char hex[] = "0123456789ABCDEF";
+    char hex[] = "0123456789abcdef";
     for (int i = 0; hex[i]; i++)
     {
         if (i == c)
@@ -66,9 +65,7 @@ void	uint8_putnbr_hex(uint8_t nb)
 
 	number = nb;
 	if (number >= 0 && number < 16)
-    {
 		ft_putchar_hex(number);
-    }
 	if (number >= 16)
 	{
 		uint16_putnbr_hex(number / 16);
@@ -88,21 +85,33 @@ void    print_addr(int16_t i)
     uart_tx(' ');
 }
 
-void    print_line_content(uint8_t range)
+unsigned char eeprom_read(unsigned int addr)
 {
-    int8_t *addr;
-    int8_t content;
+    while (EECR & (1 << EEPE)) {}
+    EEAR = addr;
+    EECR |= (1 << EERE);
+    return (EEDR);
+}
+
+void    print_line_content()
+{
+    uint8_t content;
+    uint8_t byte_nb = 0;
+    static int16_t line_nb = 0;
+    
     for (int i = 0; i < 16; i++)
     {
-        addr = (int8_t *)(range + i);
-        eeprom_busy_wait();
-        content = eeprom_read_byte((const uint8_t *)addr);
-        if (content == 0)
-            uart_printstr("00");
-        else
-            uint8_putnbr_hex(content);                
-        if (i % 2 == 0)
-            uart_printstr(" ");
+        content = eeprom_read(line_nb);
+        if (content < (int8_t)16)
+            uart_tx('0');
+        uint8_putnbr_hex(content);
+        byte_nb++;
+        if (byte_nb == 4)
+        {
+            uart_tx(' ');
+            byte_nb = 0;
+        }
+        line_nb++;
     }
 }
 
@@ -122,6 +131,7 @@ void    eeprom_hexdump(void)
 int main ()
 {
     uart_init();
+    // uart_printstr("\x1B[2J\x1B[H");
     eeprom_hexdump();
     while (1) {}
 }
