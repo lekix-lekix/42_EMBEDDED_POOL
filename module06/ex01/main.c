@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 11:20:22 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 11:54:06 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,10 @@ void i2c_write(unsigned char data)
     while (!(TWCR & (1 << TWINT))) {}
 }
 
-uint8_t i2c_read(void)
+void i2c_read(void)
 {
     TWCR = (1 << TWINT | 1 << TWEN | 1 << TWEA);        // TWEA : asking for ACK
-    while (!(TWCR & (1 << TWINT))) {}
-    return (TWDR);                                      // Reading from TWI Data Register
+    while (!(TWCR & (1 << TWINT))) {}                   
 }
 
 void i2c_start(void)
@@ -79,7 +78,7 @@ void aht_calibration(void)
     _delay_ms(10);                                      // Waiting 10 ms as asked in the datasheet 
 }
 
-void	ft_putchar_hex(char c)
+void	print_hex_value(char c)
 {
     char hex[] = "0123456789ABCDEF";
     for (int i = 0; hex[i]; i++)
@@ -96,12 +95,12 @@ void	ft_putnbr_hex(uint8_t nb)
 	number = nb;
 	if (number >= 0 && number < 16)
     {
-		ft_putchar_hex(number);
+		print_hex_value(number);
     }
 	if (number >= 16)
 	{
 		ft_putnbr_hex(number / 16);
-		ft_putchar_hex(number % 16);
+		print_hex_value(number % 16);
 	}
 }
 
@@ -116,7 +115,8 @@ void init_sensor()
 
     i2c_start();
     i2c_write(SENSOR_ADDR << 1 | 1);                            // Restarting as Master Receiver to read the sensor status
-    if (!(i2c_read() & 0x08))                                   // Reading status, if bit 3 is off : calibration needed
+    i2c_read();
+    if (!(TWDR & 0x08))                                         // Reading status, if bit 3 is off : calibration needed
     {
         uart_printstr("Calibration needed\r\n");
         aht_calibration();

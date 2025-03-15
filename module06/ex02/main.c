@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:32:10 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 11:14:55 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/15 11:55:25 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,10 @@ void i2c_write(unsigned char data)
     while (!(TWCR & (1 << TWINT))) {}
 }
 
-uint8_t i2c_read(void)
+void i2c_read(void)
 {
     TWCR = (1 << TWINT | 1 << TWEN | 1 << TWEA);        // TWEA : asking for ACK
-    while (!(TWCR & (1 << TWINT))) {}
-    return (TWDR);                                      // Reading from TWI Data Register
+    while (!(TWCR & (1 << TWINT))) {}                   // Reading from TWI Data Register
 }
 
 void i2c_start(void)
@@ -76,32 +75,6 @@ void aht_calibration(void)
     i2c_write(0xBE);                                    // Calibration command (0xBE, 0x08, 0x00)
     i2c_write(0x08);
     i2c_write(0x00);
-}
-
-void	ft_putchar_hex(char c)
-{
-    char hex[] = "0123456789ABCDEF";
-    for (int i = 0; hex[i]; i++)
-    {
-        if (i == c)
-            uart_tx(hex[i]);
-    }
-}
-
-void	ft_putnbr_hex(uint8_t nb)
-{
-	long int	number;
-
-	number = nb;
-	if (number >= 0 && number < 16)
-    {
-		ft_putchar_hex(number);
-    }
-	if (number >= 16)
-	{
-		ft_putnbr_hex(number / 16);
-		ft_putchar_hex(number % 16);
-	}
 }
 
 void	ft_putchar(char c)
@@ -139,18 +112,6 @@ void trigger_measurement(void)
     _delay_ms(80);
 }
 
-void print_bit(int32_t to_print)
-{
-    for (int i = 0; i < 32; i++)
-    {
-        if ((to_print & (1 << (31 - i))) != 0)
-            uart_tx('1');
-        else
-            uart_tx('0');
-    }
-    uart_printstr("\n\r");
-}
-
 void write_measures(float temp, float humid)
 {
     float humidity = (humid * 100.0f) / 1048576.0f;                 // Formulas in the datasheet
@@ -178,17 +139,6 @@ uint32_t get_humid(uint8_t *data)
     return (humid);
 }
 
-// void convert_measurements(uint8_t *data)
-// {
-//     uint32_t temp;
-//     uint32_t humid;
-    
-//     humid = ((uint32_t)data[0] << 12 | (uint32_t)data[1] << 4 | ((uint32_t)data[2] & 0xF0));
-//     temp = ((uint32_t)(data[2] & 0x0F)) << 16 | ((uint32_t)data[3] << 8) | data[4];
-
-//     write_measures(temp, humid);
-// }
-
 void init_sensor()
 {
     _delay_ms(40);
@@ -200,9 +150,10 @@ void init_sensor()
 
     i2c_start();
     i2c_write(SENSOR_ADDR << 1 | 1);
-    if (!(i2c_read() & 0x08))
+    i2c_read();
+    if (!(TWDR & 0x08))
     {
-        uart_printstr("calibration needed\r\n");
+        uart_printstr("Calibration needed\r\n");
         aht_calibration();
     }
 }
@@ -214,7 +165,7 @@ void get_measurements(float *temp, float *humid)
     i2c_start();
     i2c_write(SENSOR_ADDR << 1);
     i2c_write(0xAC);
-    i2c_write(0x33);
+    i2c_write(0x33);               // asking for measurement
     i2c_write(0x00);
     i2c_stop();
     _delay_ms(80);
@@ -226,7 +177,7 @@ void get_measurements(float *temp, float *humid)
         i2c_read();
         if (i == 0)
         {
-            TWDR = 0;
+            TWDR = 0;           // first byte (status) ignored
             continue;
         }
         uint8_t res = TWDR;
