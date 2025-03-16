@@ -6,13 +6,18 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/14 15:06:40 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/15 21:15:03 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = main
 
-SRCS = ./main.c 
+SRCS = ./main.c \
+		./uart.c \
+		./prompt.c \
+		./eeprom.c \
+		./ft_putnbr.c \
+		./libc.c
 
 OBJS = $(SRCS:.c=.o)
 
