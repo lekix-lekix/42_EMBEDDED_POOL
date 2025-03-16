@@ -6,18 +6,11 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:26:49 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 00:58:53 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 16:41:57 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include.h"
-
-
-
-int is_printable(char c)
-{
-    return (c >= 32 && c <= 126);
-}
 
 void	add_char(char *str, char c, int len)
 {
@@ -72,24 +65,6 @@ uint16_t hex_to_int(char *str)
 {
     return ((get_hex_value(str[0]) * 16) + get_hex_value(str[1]));
 }
-
-// int	check_prompt(char *str)
-// {
-// 	if (ft_strlen(str) != 10 && ft_strlen(str) != 11)
-// 		return (ft_bzero(str));
-// 	for (int i = 0; str[i]; i++)
-// 	{
-//         if (str[i] == 8 && str[i] != ' ')
-//             return (ft_bzero(str));
-//         if (str[i] != 8 && is_valid_char(str[i]) && !is_nb(str[i]))
-//             return (ft_bzero(str));
-//         if ((i < 5 && str[i] != '0') || (i == 5 && hex_to_int_hun(str + i) > 1023))
-//             return (ft_bzero(str));
-//         if (i == 9 && hex_to_int(str + i) > 255)
-//             return (ft_bzero(str));
-// 	}
-// 	return (0);
-// }
 
 void	prompt(char *str, int len)
 {

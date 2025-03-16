@@ -6,20 +6,20 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 17:20:09 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 01:06:58 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 11:49:09 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include.h"
 
-void    print_addr(int16_t i)
+void    print_addr(uint16_t i)
 {
-    if (i < 16)
-        uart_printsr("000000");
+    if (i == 0)
+        uart_printsr("0000000\0");
     else if (i >= 16 && i <= 255)
-        uart_printsr("00000");
+        uart_printsr("000000");
     else
-        uart_printsr("0000");
+        uart_printsr("00000");
     uint16_putnbr_hex(i);
     uart_tx(' ');
 }
@@ -71,7 +71,6 @@ void    print_line_content(int16_t *line_nb, int16_t print_red_addr)
 
 void    eeprom_hexdump(int16_t print_red)
 {
-    uartinit();
     uint16_t i = 0;
     int16_t line_nb = 0;
     while (i < 1024)

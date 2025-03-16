@@ -6,7 +6,7 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/15 21:15:03 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/16 16:44:30 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,10 @@ SRCS = ./main.c \
 		./prompt.c \
 		./eeprom.c \
 		./ft_putnbr.c \
-		./libc.c
+		./ft_read.c \
+		./ft_write.c \
+		./libc.c \
+		./ft_forget.c
 
 OBJS = $(SRCS:.c=.o)
 

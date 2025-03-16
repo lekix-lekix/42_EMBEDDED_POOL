@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:25:47 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 01:00:48 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 11:56:46 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,8 @@ void    uint8_putnbr_hex_red(uint8_t nb);
 void	ft_putnbr(int nb);
 uint32_t hex_to_int_hun(char *str);
 uint16_t hex_to_int(char *str);
+
+void    print_addr(uint16_t i);
+
 
 #endif

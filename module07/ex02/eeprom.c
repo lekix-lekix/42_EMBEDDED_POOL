@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 17:20:09 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 01:06:58 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 17:40:43 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,18 @@ void    eeprom_write(unsigned int addr, unsigned char data)
     EECR |= (1 << EEPE);
 }
 
-void    print_line_content(int16_t *line_nb, int16_t print_red_addr)
+void    print_line_content(int16_t *line_nb, int16_t print_red_addr, uint8_t *buffer)
 {
     uint8_t content;
     uint8_t byte_nb = 0;
-    
-    for (int i = 0; i < 16; i++)
+    uint8_t byte;
+    int i = 0;
+
+    while (i < 16)
     {
-        content = eeprom_read(*line_nb);
+        byte = eeprom_read(*line_nb);
+        buffer[i] = byte;
+        content = byte;
         if (content < (int8_t)16 && *line_nb == print_red_addr)
             ft_putchar_hex_red(0);
         else if (content < (int8_t)16)
@@ -66,7 +70,22 @@ void    print_line_content(int16_t *line_nb, int16_t print_red_addr)
             byte_nb = 0;
         }
         *line_nb += 1;
+        i++;
     }
+    buffer[i] = '\0';
+}
+
+void visualize_content(uint8_t *tab)
+{
+    uart_printsr("|");
+    for (int i = 0; i < 16; i++)
+    {
+        if (!is_printable(tab[i]))
+            uart_tx('.');   
+        else
+            uart_tx(tab[i]);
+    }
+    uart_printsr("|");
 }
 
 void    eeprom_hexdump(int16_t print_red)
@@ -74,10 +93,14 @@ void    eeprom_hexdump(int16_t print_red)
     uartinit();
     uint16_t i = 0;
     int16_t line_nb = 0;
+    uint8_t buffer[17];
+
     while (i < 1024)
     {
         print_addr(i);
-        print_line_content(&line_nb, print_red);
+        print_line_content(&line_nb, print_red, buffer);
+        uart_printsr(" ");
+        visualize_content(buffer);
         uart_printsr("\n\r\0");
         i += 16;
     }

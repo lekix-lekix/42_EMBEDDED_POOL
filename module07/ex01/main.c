@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 23:51:46 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 01:07:11 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 17:46:01 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,22 @@
 
 int main ()
 {
-    uint32_t addr = 0;
-    uint16_t data = 0;
+    uint16_t addr = 0;   
+    uint16_t data = 0;   
     char str[12];
     unsigned char byte; 
     
     uartinit();
     ft_bzero(str);
+
     while (1)
     {
         prompt(str);
-        uart_printsr("\n\r\0");
+        uart_printsr("\n\n\r\0");
         if (!str[0])
             continue;
         addr = hex_to_int_hun(str + 5);
-        // uint16_putnbr_hex(addr);
-        // uart_printsr("\n\r\0");
         data = hex_to_int(str + 9);
-        // uint8_putnbr_hex(data);
-        // uart_printsr("\n\r\0");
         byte = eeprom_read(addr);
         if (byte == data)
             uart_printsr("value is already there \n\r\0");

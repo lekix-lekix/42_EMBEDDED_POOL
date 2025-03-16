@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 20:45:45 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 21:44:09 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 16:25:12 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,9 @@ int	ft_bzero(char *str, int len)
 	while (++i < len)
 		str[i] = '\0';
     return (-1);
+}
+
+int is_printable(char c)
+{
+    return (c >= 32 && c <= 126);
 }

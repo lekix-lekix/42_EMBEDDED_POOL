@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:26:49 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 01:07:39 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 17:42:49 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,6 @@ int	check_prompt(char *str)
             return (ft_bzero(str));
         if ((i < 5 && str[i] != '0') || (i == 5 && hex_to_int_hun(str + i) > 1023))
             return (ft_bzero(str));
-        // if (i == 9 && hex_to_int(str + i) > 255)
-        //     return (ft_bzero(str));
 	}
 	return (0);
 }
@@ -128,7 +126,7 @@ void	prompt(char *str)
             if (c == 127 && i > 0)
             {
                 del_char(str);
-                uart_printsr("\x08 \x08"); // move cursor left, print space, move cursor left
+                uart_printsr("\x08 \x08\0"); // move cursor left, print space, move cursor left
                 i--;
             }
 		}
