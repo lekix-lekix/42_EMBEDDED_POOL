@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 12:30:44 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 17:43:02 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 17:57:02 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,6 @@ void get_content_from_key(unsigned int addr, char *content)
         byte = eeprom_read(addr);
         addr++;
         i++;
-    }
-    if (i == 35)
-    {
-        uart_printsr("NO MAGIC CONTENT FOUND AND THATS WEIRD\r\n");
-        return ;
     }
     addr++;
     i = 0;

@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 12:32:38 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 17:43:14 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 18:03:01 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int key_match(char *key, unsigned int addr)
     int i = -1;
 
     ft_bzero(key_cmp, 33);
-    while (++i < 32 && i != M_CONTENT)
+    while (++i < 33 && i != M_CONTENT)
         key_cmp[i] = eeprom_read(addr + i);
     key_cmp[i - 1] = '\0';
     if (ft_strcmp(key, key_cmp) == 0)

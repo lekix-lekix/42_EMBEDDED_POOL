@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 16:28:07 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 17:11:25 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 18:01:29 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void    ft_forget(void)
     ft_bzero(key, 33);
     
     uart_printsr("ENTER A KEY: ");
-    prompt(key, 33);
+    prompt(key, 32);
     uart_printsr("\r\n");
     for (int addr = 0; addr < 1024; addr++)
     {
