@@ -6,28 +6,38 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 16:35:54 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 19:22:45 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 00:49:31 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include.h"
 
-void	ft_putchar_hex(char c)
+void	uint8_ft_putchar_hex(uint8_t nb)
 {
     char hex[] = "0123456789abcdef";
     for (int i = 0; hex[i]; i++)
     {
-        if (i == c)
+        if ((uint8_t)i == nb)
             uart_tx(hex[i]);
     }
 }
 
-void	ft_putchar_hex_red(char c)
+void	uint16_ft_putchar_hex(uint16_t nb)
 {
     char hex[] = "0123456789abcdef";
     for (int i = 0; hex[i]; i++)
     {
-        if (i == c)
+        if ((uint16_t)i == nb)
+            uart_tx(hex[i]);
+    }
+}
+
+void	ft_putchar_hex_red(uint8_t nb)
+{
+    char hex[] = "0123456789abcdef";
+    for (int i = 0; hex[i]; i++)
+    {
+        if ((uint8_t)i == nb)
         {
             uart_printsr("\x1b[91m");
             uart_tx(hex[i]);
@@ -43,12 +53,12 @@ void	uint16_putnbr_hex(uint16_t nb)
 	number = nb;
 	if (number >= 0 && number < 16)
     {
-		ft_putchar_hex(number);
+		uint16_ft_putchar_hex(number);
     }
 	if (number >= 16)
 	{
 		uint16_putnbr_hex(number / 16);
-		ft_putchar_hex(number % 16);
+		uint16_ft_putchar_hex(number % 16);
 	}
 }
 
@@ -58,11 +68,11 @@ void	uint8_putnbr_hex(uint8_t nb)
 
 	number = nb;
 	if (number >= 0 && number < 16)
-		ft_putchar_hex(number);
+		uint8_ft_putchar_hex(number);
 	if (number >= 16)
 	{
-		uint16_putnbr_hex(number / 16);
-		ft_putchar_hex(number % 16);
+		uint8_putnbr_hex(number / 16);
+		uint8_ft_putchar_hex(number % 16);
 	}
 }
 

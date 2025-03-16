@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:25:47 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 20:33:12 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 01:00:48 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char uart_rx(void);
 void uart_printsr(char *str);
 
 void    prompt(char *str);
-void	ft_putchar_hex_red(char c);
+void	ft_putchar_hex_red(uint8_t nb);
 int	    ft_bzero(char *str);
 
 unsigned char eeprom_read(unsigned int addr);
@@ -33,7 +33,7 @@ void	uint16_putnbr_hex(uint16_t nb);
 void	uint8_putnbr_hex(uint8_t nb);
 void    uint8_putnbr_hex_red(uint8_t nb);
 void	ft_putnbr(int nb);
-uint16_t hex_to_int_hun(char *str);
+uint32_t hex_to_int_hun(char *str);
 uint16_t hex_to_int(char *str);
 
 #endif

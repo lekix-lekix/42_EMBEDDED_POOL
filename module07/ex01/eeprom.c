@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 17:20:09 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 20:24:33 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 01:06:58 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void    eeprom_hexdump(int16_t print_red)
     {
         print_addr(i);
         print_line_content(&line_nb, print_red);
-        uart_printsr("\r\n");
+        uart_printsr("\n\r\0");
         i += 16;
     }
 }

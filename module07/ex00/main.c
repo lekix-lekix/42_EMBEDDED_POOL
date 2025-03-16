@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 23:51:46 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 15:55:05 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 01:06:58 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void    eeprom_hexdump(void)
     {
         print_addr(i);
         print_line_content(i);
-        uart_printstr("\r\n");
+        uart_printstr("\n\r\0");
         i += 16;
     }
 }

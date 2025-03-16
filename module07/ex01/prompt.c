@@ -6,11 +6,21 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:26:49 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/15 20:52:36 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/16 01:07:39 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./include.h"
+
+int	ft_strlen(char *s)
+{
+	int	len;
+
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
+}
 
 int	ft_bzero(char *str)
 {
@@ -56,7 +66,7 @@ int is_valid_char(char c)
     return (c >= 'A' && c <= 'Z');
 }
 
-uint8_t get_hex_value(char c)
+uint16_t get_hex_value(char c)
 {
 	char	base[] = "0123456789abcdef";
 	int		i;
@@ -71,7 +81,7 @@ uint8_t get_hex_value(char c)
 	return (-1);
 }
 
-uint16_t hex_to_int_hun(char *str)
+uint32_t hex_to_int_hun(char *str)
 {
     return ((get_hex_value(str[0]) * 256 ) + (get_hex_value(str[1]) * 16) + get_hex_value(str[2]));
 }
@@ -83,7 +93,7 @@ uint16_t hex_to_int(char *str)
 
 int	check_prompt(char *str)
 {
-	if (ft_strlen(str) != 10 && ft_strlen(str) != 11)
+	if (ft_strlen(str) != 11)
 		return (ft_bzero(str));
 	for (int i = 0; str[i]; i++)
 	{
@@ -93,8 +103,8 @@ int	check_prompt(char *str)
             return (ft_bzero(str));
         if ((i < 5 && str[i] != '0') || (i == 5 && hex_to_int_hun(str + i) > 1023))
             return (ft_bzero(str));
-        if (i == 9 && hex_to_int(str + i) > 255)
-            return (ft_bzero(str));
+        // if (i == 9 && hex_to_int(str + i) > 255)
+        //     return (ft_bzero(str));
 	}
 	return (0);
 }
@@ -104,7 +114,6 @@ void	prompt(char *str)
 	char	c = '\0';
     int     i = 0;
 
-	ft_bzero(str);
 	while (c != 13) // carriage return (enter)
 	{
 		if (UCSR0A & (1 << RXC0)) // receive complete flag
@@ -126,8 +135,7 @@ void	prompt(char *str)
 	}
 	if (check_prompt(str) == -1)
 	{
-		uart_printsr("\n\rWrong format detected! Aborting..\n\r");
+		uart_printsr("\n\rWrong format detected! Aborting..\n\r\0");
 		return ;
 	}
-    uart_printsr("\r\n");
 }
