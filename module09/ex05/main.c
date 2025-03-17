@@ -6,7 +6,7 @@
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:22:53 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/17 16:37:28 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:41:30 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,10 @@ int main ()
     {
         for (int j = 0; j < 85; j++)
         {
-                light_segment(state, tab[i % 10]);
-                light_segment(state_2, tab[(i / 10) % 10]);
-                light_segment(state_3, tab[(i / 100) % 10]);
-                light_segment(state_4, tab[(i / 1000) % 10]);
+            light_segment(state, tab[i % 10]);
+            light_segment(state_2, tab[(i / 10) % 10]);
+            light_segment(state_3, tab[(i / 100) % 10]);
+            light_segment(state_4, tab[(i / 1000) % 10]);
         }
         i++;
         if (i == 1000)
