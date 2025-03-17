@@ -6,7 +6,7 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/14 15:06:40 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/16 22:36:16 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,6 @@ FLASH_MEM = -U flash:w:$(NAME).hex:i # actually doing the programming ; syntax :
 VERBOSE = -v # verbose output, for debugging
 
 all: flash
-	screen /dev/ttyUSB0 115200
 
 hex: $(NAME).hex
 

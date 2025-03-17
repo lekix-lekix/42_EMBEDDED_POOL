@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/16 18:30:19 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/16 22:34:44 by kipouliq         ###   ########.fr       */
+/*   Created: 2025/03/16 22:24:46 by kipouliq          #+#    #+#             */
+/*   Updated: 2025/03/16 22:35:56 by kipouliq         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,23 @@ void init_SPI(void)
     DDRB |= (1 << SS);
 }
 
+void set_rgb()
+{
+    static int i = 1;
+    int tab[7][3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {1, 1, 0}, {0, 1, 1}, {1, 0, 1}, {1, 1, 1}};
+    SPI_rgb(tab[i][0] * 255, tab[i][1] * 255, tab[i][2] * 255, 31);
+    if (i == 6)
+        i = 0;
+    else
+        i++;
+}
 
 int main ()
 {
     init_SPI();
-    while (1) 
+    while (1)
     {
-        SPI_rgb(255, 0, 0, 31);
-        _delay_ms(20);
+        set_rgb();
+        _delay_ms(1000);
     }
 }
