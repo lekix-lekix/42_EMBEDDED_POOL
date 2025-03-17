@@ -6,13 +6,14 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/16 22:36:10 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/17 12:26:39 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = main
 
-SRCS = ./main.c 
+SRCS = ./main.c \
+		./i2c.c
 
 OBJS = $(SRCS:.c=.o)
 

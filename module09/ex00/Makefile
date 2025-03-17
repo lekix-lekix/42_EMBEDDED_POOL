@@ -6,16 +6,15 @@
 #    By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/03 10:38:15 by kipouliq          #+#    #+#              #
-#    Updated: 2025/03/17 01:57:35 by kipouliq         ###   ########.fr        #
+#    Updated: 2025/03/17 12:24:32 by kipouliq         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = main
 
 SRCS = ./main.c \
-		./i2c.c \
-		./i2c_print_status.c
-
+		./i2c.c 
+		
 OBJS = $(SRCS:.c=.o)
 
 CFLAGS = -Wall -Wextra -Werror -O1
