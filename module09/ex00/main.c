@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lekix <lekix@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 01:51:59 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/17 16:35:14 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/18 19:44:08 by lekix            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,6 @@ void expander_set_register(int exp_register, int state)
     i2c_write(state);
     i2c_stop();
 }
-
-// void expander_set_D9()
-// {
-//     i2c_start();
-//     i2c_write(0x40);
-//     i2c_write(0x06);
-//     i2c_write(0xFF & (0 << 3));
-//     i2c_stop();
-// 
-
 
 int main ()
 {
