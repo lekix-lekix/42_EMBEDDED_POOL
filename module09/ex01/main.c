@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kipouliq <kipouliq@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lekix <lekix@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 12:22:53 by kipouliq          #+#    #+#             */
-/*   Updated: 2025/03/17 14:55:01 by kipouliq         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:31:14 by lekix            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,7 @@ int main ()
         if (check_pin(INPUT_REG_0, 0))
         {
             nb++;
-            if (nb == 8)
-                nb = 0;
-            led_state = (led_state & ~led_mask) | ~(nb << 1 & led_mask);
+            led_state = (~led_mask) | ~(nb % 8 << 1); // car nb max = 7 = 0b00000111 comme on bitshift de 1 on aura toujours un 0 en dernier et quatre 0 en premier
             expander_set_register(OUTPUT_REG_0, led_state);
             while (check_pin(INPUT_REG_0, 0)) {}
         }
